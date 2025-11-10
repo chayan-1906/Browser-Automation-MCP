@@ -18,10 +18,7 @@ npm install @modelcontextprotocol/sdk
 
 1. **Browser Connection Modes**: Support multiple browser launch strategies
    - **Mode 1 - Headless (default)**: Launch new headless Chromium instance
-   - **Mode 2 - Connect to Running**: Connect to existing Chrome with remote debugging
-     - User starts Chrome with: `chrome.exe --remote-debugging-port=9222`
-     - Server connects via: `puppeteer.connect({ browserURL: 'http://localhost:9222' })`
-   - **Mode 3 - Use Profile**: Launch with specific Chrome profile
+   - **Mode 2 - Use Profile**: Launch with specific Chrome profile
      - Use profile path: `puppeteer.launch({ userDataDir: 'C:\\Users\\Name\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1' })`
      - Benefits: Logged-in sessions, cookies, extensions, personalized settings
 
@@ -45,9 +42,8 @@ npm install @modelcontextprotocol/sdk
 ### 2.3 Common Parameters (All Tools)
 
 Every tool accepts these optional parameters for browser mode selection:
-- **`mode`**: "headless" | "connect" | "profile" (default: "headless")
+- **`mode`**: "headless" | "profile" (default: "headless")
 - **`profilePath`**: Chrome profile directory path (required if mode="profile")
-- **`debuggingPort`**: Remote debugging port (default: 9222, used if mode="connect")
 - **`headless`**: true/false (default: true, only for mode="headless")
 
 **User Interaction Flow:**
@@ -115,18 +111,7 @@ Claude calls: browse_page(
 → Opens with saved cookies, logged-in session
 ```
 
-**Example 3: Connect to running Chrome**
-```
-User: "Connect to my running Chrome on port 9222"
-Claude calls: browse_page(
-  url="https://example.com",
-  mode="connect",
-  debuggingPort=9222
-)
-→ Uses your currently open Chrome browser
-```
-
-**Example 4: Tab interaction**
+**Example 3: Tab interaction**
 ```
 1. browse_page(url) → See "Code" tab exists
 2. wait_for_selector(url, selector='button[data-tab="code"]') → Ensure button is ready
