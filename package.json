@@ -1,0 +1,42 @@
+{
+  "name": "browser-automation-mcp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "keywords": [
+    "model-context-protocol",
+    "mcp-server",
+    "ai-assistant",
+    "claude-ai",
+    "claude-llm",
+    "llm-integration",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "Padmanabha Das",
+  "license": "ISC",
+  "scripts": {
+    "dev": "ts-node src/server.ts",
+    "build": "tsc",
+    "bundle": "ncc build dist/server.js -o build",
+    "package": "ts-node src/scripts/package-script.ts"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/node": "^24.10.0",
+    "@types/yauzl": "^2.10.3",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mcp-utils": "github:pdas9647/MCP-Utils#master",
+    "puppeteer": "^24.29.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.21.1",
+    "@types/express": "^5.0.3",
+    "@vercel/ncc": "^0.38.4",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
