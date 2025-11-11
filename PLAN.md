@@ -16,24 +16,25 @@ npm install @modelcontextprotocol/sdk
 
 ### 2.2 Internal Operations
 
-1. **Browser Connection Modes**: Support multiple browser launch strategies
-   - **Mode 1 - Headless (default)**: Launch new headless Chromium instance
-   - **Mode 2 - Use Profile**: Launch with specific Chrome profile
-     - Use profile path: `puppeteer.launch({ userDataDir: 'C:\\Users\\Name\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1' })`
-     - Benefits: Logged-in sessions, cookies, extensions, personalized settings
+1. **Browser Connection Mode**: Headless Chromium only
+    - **Mode: Headless**: Launch new headless Chromium instance
+        - Use case: All websites including authenticated ones
+        - For authenticated sites: Set `headless: false` on first run to login manually, then use `headless: true` for subsequent runs
+        - Sessions persist in the browser's user data directory
+    - **Note**: Connect mode (remote debugging) was planned but Chrome's security policies on Windows prevent the debugging port from opening reliably, even with correct flags
 
 2. **Browser Pool Management**: Maintain a pool of reusable browser instances
-   - Initialize browser on first request based on configured mode
-   - Reuse browser instance across multiple tool calls
-   - Clean up idle browsers after timeout
-   - Handle browser crashes and auto-restart
+    - Initialize browser on first request based on configured mode
+    - Reuse browser instance across multiple tool calls
+    - Clean up idle browsers after timeout
+    - Handle browser crashes and auto-restart
 
 3. **Page Navigation**: Navigate to the target URL with timeout handling
 
 4. **Content Extraction**:
-   - Wait for page load (networkidle2)
-   - Extract all visible text, links, and DOM structure
-   - Capture a screenshot as base64
+    - Wait for page load (networkidle2)
+    - Extract all visible text, links, and DOM structure
+    - Capture a screenshot as base64
 
 5. **Resource Cleanup**: Close pages after each request, close browser only on shutdown
 
@@ -41,50 +42,65 @@ npm install @modelcontextprotocol/sdk
 
 ### 2.3 Common Parameters (All Tools)
 
-Every tool accepts these optional parameters for browser mode selection:
-- **`mode`**: "headless" | "profile" (default: "headless")
-- **`profilePath`**: Chrome profile directory path (required if mode="profile")
-- **`headless`**: true/false (default: true, only for mode="headless")
+Every tool accepts these optional parameters:
 
-**User Interaction Flow:**
-1. User: "Browse example.com using my Chrome profile"
-2. Claude asks: "What's your Chrome profile path?"
-3. User: "C:\\Users\\John\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1"
-4. Tool call: `browse_page(url, mode="profile", profilePath="...")`
+- **`headless`**: true/false (default: true) - Set to false to see the browser window
+
+**Headless Mode (Default)**
+
+```typescript
+browse_page(url = "https://example.com")
+// Uses headless Chromium, runs in background
+```
+
+**Visible Mode (for login/debugging)**
+
+```typescript
+browse_page(url = "https://groww.in", headless = false)
+// Opens visible browser window, useful for manual login
+// Sessions persist, subsequent runs can use headless=true
+```
 
 ### 2.4 Tools (7 total)
 
 **Tool 1: `browse_page`**
+
 - Input: URL + [common params]
 - Output: Screenshot (base64) + visible text + page title
 - Use: Initial page load
 
 **Tool 2: `extract_links`**
+
 - Input: URL, CSS selector (optional) + [common params]
 - Output: Array of `{text, href, selector}`
 - Use: Get navigation/component links
 
 **Tool 3: `click_element`**
+
 - Input: URL, CSS selector, wait time (ms) + [common params]
 - Output: Screenshot + text after click
 - Use: Click tabs, buttons, dropdowns
 
 **Tool 4: `wait_for_selector`**
+
 - Input: URL, CSS selector, timeout (ms) + [common params]
 - Output: Success status + screenshot when element appears
 - Use: Wait for dynamic content to load before interaction
 
 **Tool 5: `execute_script`**
+
 - Input: URL, JavaScript code + [common params]
 - Output: Script return value + screenshot
 - Use: Custom interactions, data extraction
 
 **Tool 6: `scroll_and_capture`**
+
 - Input: URL, scroll distance ("bottom" or px) + [common params]
 - Output: Screenshot + newly visible text
 - Use: Lazy-loaded content
 
 **Tool 7: `page_to_pdf`**
+
 - Input: URL, click actions (optional array of selectors), output path + [common params]
 - Output: PDF file path + base64
 - Use: Save the complete page with all tabs/sections expanded
@@ -93,25 +109,27 @@ Every tool accepts these optional parameters for browser mode selection:
 ### 2.5 Workflow Examples
 
 **Example 1: Headless browsing (default)**
+
 ```
 browse_page(url="https://example.com")
-→ Uses default headless mode
+→ Uses default headless Chromium
 ```
 
-**Example 2: Using Chrome profile**
+**Example 2: Authenticated site (first time login)**
+
 ```
-User: "Browse my bank website using my Chrome profile"
-Claude: "What's your Chrome profile path?"
-User: "C:\Users\John\AppData\Local\Google\Chrome\User Data\Profile 1"
-Claude calls: browse_page(
-  url="https://bank.com",
-  mode="profile",
-  profilePath="C:\Users\John\AppData\Local\Google\Chrome\User Data\Profile 1"
-)
-→ Opens with saved cookies, logged-in session
+User: "Browse my Groww portfolio"
+Claude calls: browse_page(url="https://groww.in/login", headless=false)
+→ Visible browser opens, user logs in manually
+→ Session saves automatically
+
+// Next time:
+Claude calls: browse_page(url="https://groww.in/dashboard", headless=true)
+→ Already logged in from previous session
 ```
 
 **Example 3: Tab interaction**
+
 ```
 1. browse_page(url) → See "Code" tab exists
 2. wait_for_selector(url, selector='button[data-tab="code"]') → Ensure button is ready
@@ -129,7 +147,10 @@ Claude calls: browse_page(
     "title": "Page Title",
     "text": "All extracted text...",
     "links": [
-      {"text": "Component Name", "href": "/docs/component"}
+      {
+        "text": "Component Name",
+        "href": "/docs/component"
+      }
     ],
     "metadata": {
       "loadTime": 1234,
@@ -140,10 +161,9 @@ Claude calls: browse_page(
 ```
 
 **Key Implementation Details**:
+
 - Set `--no-sandbox` and `--disable-setuid-sandbox` flags for Puppeteer if running in Docker/containers
 - Browser instance pool: Reuse browser across requests for 10x performance improvement
 - Auto-cleanup: Close idle browsers after 5 minutes of inactivity
-- Profile mode benefits: Access authenticated sessions, use extensions, bypass anti-bot detection
-- Windows profile paths: `C:\Users\<Name>\AppData\Local\Google\Chrome\User Data\<Profile Name>`
-- Mac profile paths: `~/Library/Application Support/Google/Chrome/<Profile Name>`
-- Linux profile paths: `~/.config/google-chrome/<Profile Name>`
+- Session persistence: User data stored in Chromium's default profile directory, login sessions maintained across runs
+- For authenticated sites: Use `headless: false` first to login, then `headless: true` for automation

@@ -22,7 +22,7 @@ const server = new McpServer({
 
 freezePortOnQuit();
 
-const serverName = 'browser-automation';
+export const serverName = 'browser-automation';
 
 async function startMcp() {
     await setupMcpTools(server);
