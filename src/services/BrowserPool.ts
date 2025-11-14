@@ -76,6 +76,18 @@ class BrowserPool {
     }
 
     /**
+     * Release browser back to pool
+     */
+    releaseBrowser(config: BrowserConfig): void {
+        const key = this.getConfigKey(config);
+        const instance = this.pools.get(key);
+        if (instance) {
+            instance.inUse = false;
+            instance.lastUsed = Date.now();
+        }
+    }
+
+    /**
      * Create a new page from browser
      */
     async createPage(browser: Browser): Promise<Page> {

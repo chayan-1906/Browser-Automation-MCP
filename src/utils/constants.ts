@@ -5,7 +5,7 @@ const tools: ToolsMap = {
     browsePage: {
         name: 'browse-page',
         category: 'Browser Automation',
-        techDescription: 'Navigates to a URL and extracts page content including screenshot, visible text, and page title. Supports headless mode, connecting to running Chrome, or using Chrome profiles',
+        techDescription: 'Navigates to a URL and extracts page content including screenshot, visible text, and page title. Uses persistent Chromium profile to maintain login sessions across runs',
         userFriendlyDescription: 'Open a website and get its content, including a screenshot and all visible text',
         parameters: [
             {
@@ -15,20 +15,8 @@ const tools: ToolsMap = {
                 optional: false,
             },
             {
-                name: 'mode',
-                techDescription: 'Browser launch mode: "headless" (new browser instance) or "profile" (launch with Chrome profile). Default: "headless"',
-                userFriendlyDescription: 'How to open the browser - in the background or use your Chrome profile',
-                optional: true,
-            },
-            {
-                name: 'profilePath',
-                techDescription: 'Chrome profile directory path. Required when mode="profile". Example: "C:\\Users\\Name\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 1"',
-                userFriendlyDescription: 'Path to your Chrome profile folder (needed if using your Chrome profile)',
-                optional: true,
-            },
-            {
                 name: 'headless',
-                techDescription: 'Run browser in headless mode (no UI). Only applies when mode="headless". Default: true',
+                techDescription: 'Run browser in headless mode (invisible). Set to false to see browser window. Default: true',
                 userFriendlyDescription: 'Whether to show the browser window or run it hidden in the background',
                 optional: true,
             },
