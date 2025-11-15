@@ -2,7 +2,7 @@ import {z} from "zod";
 import {McpServer} from "@modelcontextprotocol/sdk/server/mcp.js";
 import {printInConsole} from "mcp-utils/utils";
 import {transport} from "../server";
-import {tools} from "../utils/constants";
+import {constants, tools} from "../utils/constants";
 import {browserPool} from "../services/BrowserPool";
 
 /**
@@ -16,7 +16,7 @@ const browsePage = async (url: string, headless: boolean = true, timeout: number
     const page = await browserPool.createPage(browser);
 
     try {
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+        await page.setUserAgent(constants.userAgent);
         await page.setViewport({width: 1920, height: 1080});
 
         await printInConsole(transport, `Navigating to ${url}...`);
