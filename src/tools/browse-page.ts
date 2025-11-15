@@ -37,22 +37,32 @@ const browsePage = async (url: string, headless: boolean = true, timeout: number
         const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
         const viewportHeight = 1080;
 
-        const screenshotsNeeded = Math.ceil(pageHeight / (viewportHeight * 2));
+        let screenshotsNeeded = Math.ceil(pageHeight / (viewportHeight * 2));
+        const MAX_SCREENSHOTS = 8;
+
+        if (screenshotsNeeded > MAX_SCREENSHOTS) {
+            screenshotsNeeded = MAX_SCREENSHOTS;
+            await printInConsole(transport, `Page is very long (${pageHeight}px), limiting to ${MAX_SCREENSHOTS} screenshots`);
+        }
+
         const screenshots: string[] = [];
 
         let quality: number;
         if (screenshotsNeeded <= 3) {
             quality = 85;
-        } else if (screenshotsNeeded <= 7) {
-            quality = 70;
+        } else if (screenshotsNeeded <= 5) {
+            quality = 65;
         } else {
-            quality = 60;
+            quality = 50;
         }
 
         await printInConsole(transport, `Page height: ${pageHeight}px, capturing ${screenshotsNeeded} screenshot(s) at ${quality}% quality...`);
 
+        const scrollStep = screenshotsNeeded > 1 ? (pageHeight - viewportHeight) / (screenshotsNeeded - 1) : 0;
+
         for (let i = 0; i < screenshotsNeeded; i++) {
-            await page.evaluate((scrollY) => window.scrollTo(0, scrollY), i * viewportHeight * 2);
+            const scrollY = i === 0 ? 0 : Math.min(i * scrollStep, pageHeight - viewportHeight);
+            await page.evaluate((scroll) => window.scrollTo(0, scroll), scrollY);
 
             await new Promise(resolve => setTimeout(resolve, 300));
 
