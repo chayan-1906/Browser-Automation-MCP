@@ -52,7 +52,9 @@ class BrowserPool {
      */
     private async createBrowser(config: BrowserConfig): Promise<Browser> {
         // Use a persistent user data directory to maintain sessions
-        const userDataDir = path.join(os.homedir(), `.${serverName}-mcp`, 'chromium-profile');
+        // Separate profiles for headless and visible modes to avoid conflicts
+        const profileName = config.headless !== false ? 'chromium-profile-headless' : 'chromium-profile-visible';
+        const userDataDir = path.join(os.homedir(), `.${serverName}-mcp`, profileName);
 
         // Create directory if it doesn't exist
         if (!fs.existsSync(userDataDir)) {
