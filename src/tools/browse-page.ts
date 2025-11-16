@@ -12,7 +12,6 @@ const browsePage = async (url: string, headless: boolean = true, timeout: number
     const startTime = Date.now();
 
     const browser = await browserPool.getBrowser({headless});
-
     const page = await browserPool.createPage(browser);
 
     try {
@@ -80,7 +79,6 @@ const browsePage = async (url: string, headless: boolean = true, timeout: number
         const loadTime = Date.now() - startTime;
 
         await page.close();
-
         browserPool.releaseBrowser({headless});
 
         return {
