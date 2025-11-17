@@ -173,7 +173,7 @@ const tools: ToolsMap = {
     pageToPdf: {
         name: 'page-to-pdf',
         category: 'Browser Automation',
-        techDescription: 'Generates a PDF of the complete page. Can optionally click multiple elements before generating PDF to expand tabs/sections. Returns PDF file path and base64 encoded content',
+        techDescription: 'Generates a PDF of the complete page with automatic lazy-loading support. Scrolls through page to load all images before PDF generation. Can optionally click multiple elements before generating PDF to expand tabs/sections. If no output path provided, saves to OS Downloads folder with auto-generated filename',
         userFriendlyDescription: 'Save a webpage as a PDF file, optionally expanding sections or tabs first',
         parameters: [
             {
@@ -184,9 +184,9 @@ const tools: ToolsMap = {
             },
             {
                 name: 'outputPath',
-                techDescription: 'File system path where PDF should be saved (e.g., "C:\\Downloads\\page.pdf")',
-                userFriendlyDescription: 'Where to save the PDF file on your computer',
-                optional: false,
+                techDescription: 'Optional file system path where PDF should be saved (e.g., "C:\\Downloads\\page.pdf"). If not provided, saves to OS Downloads folder with auto-generated filename based on URL (e.g., "example-com.pdf")',
+                userFriendlyDescription: 'Where to save the PDF file (optional - defaults to Downloads folder)',
+                optional: true,
             },
             {
                 name: 'clickSelectors',
