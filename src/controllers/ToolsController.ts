@@ -7,6 +7,7 @@ import {registerTool as extractLinks} from '../tools/extract-links';
 import {registerTool as clickElement} from '../tools/click-element';
 import {registerTool as executeScript} from '../tools/execute-script';
 import {registerTool as waitForSelector} from '../tools/wait-for-selector';
+import {registerTool as scrollAndCapture} from '../tools/scroll-and-capture';
 
 async function setupMcpTools(server: McpServer) {
     const start = Date.now();
@@ -16,6 +17,7 @@ async function setupMcpTools(server: McpServer) {
     clickElement(server);
     waitForSelector(server);
     executeScript(server);
+    scrollAndCapture(server);
 
     await printInConsole(transport, `All tools loaded in ${Date.now() - start}ms`);
 }
