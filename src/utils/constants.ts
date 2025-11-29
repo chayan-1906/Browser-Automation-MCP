@@ -208,6 +208,82 @@ const tools: ToolsMap = {
             },
         ],
     },
+    getPageHtml: {
+        name: 'get-page-html',
+        category: 'Browser Automation',
+        techDescription: 'Returns HTML content of a page. Can return full HTML, only interactive elements (buttons, links, modals, popups), or a simplified structure. Useful for finding correct CSS selectors for elements',
+        userFriendlyDescription: 'Get the HTML code of a webpage to find the correct selectors for buttons, popups, and other elements',
+        parameters: [
+            {
+                name: 'url',
+                techDescription: 'The complete URL to navigate to',
+                userFriendlyDescription: 'The website address to get HTML from',
+                optional: false,
+            },
+            {
+                name: 'selector',
+                techDescription: 'CSS selector to limit HTML extraction to a specific element and its children',
+                userFriendlyDescription: 'Only get HTML from a specific part of the page (optional)',
+                optional: true,
+            },
+            {
+                name: 'mode',
+                techDescription: 'What HTML to return: "full" (complete page), "interactive" (only buttons, links, modals, popups - DEFAULT), or "structure" (simplified tag tree)',
+                userFriendlyDescription: 'How much HTML to return - "interactive" is usually best for finding selectors',
+                optional: true,
+            },
+            {
+                name: 'maxLength',
+                techDescription: 'Maximum characters to return. Default: 50000. Output will be truncated if exceeded',
+                userFriendlyDescription: 'Maximum length of HTML to return',
+                optional: true,
+            },
+            {
+                name: 'headless',
+                techDescription: 'Run browser in headless mode (invisible). Set to false to see browser window. Default: true',
+                userFriendlyDescription: 'Whether to show the browser window',
+                optional: true,
+            },
+            {
+                name: 'timeout',
+                techDescription: 'Maximum time to wait for page load in milliseconds. Default: 30000 (30 seconds)',
+                userFriendlyDescription: 'How long to wait for the page to load before giving up (in milliseconds)',
+                optional: true,
+            },
+        ],
+    },
+    waitForUser: {
+        name: 'wait-for-user',
+        category: 'Browser Automation',
+        techDescription: 'Opens a page in visible browser mode and waits for user to perform manual actions (like logging in). After the wait period or when a target selector appears, captures the page state. Always runs in visible mode.',
+        userFriendlyDescription: 'Wait for you to manually interact with a page (like logging in) before capturing its content',
+        parameters: [
+            {
+                name: 'url',
+                techDescription: 'The complete URL to navigate to',
+                userFriendlyDescription: 'The website address to open',
+                optional: false,
+            },
+            {
+                name: 'waitTime',
+                techDescription: 'Maximum time to wait for user action in milliseconds. Default: 60000 (60 seconds)',
+                userFriendlyDescription: 'How long to wait for you to complete your action (in milliseconds)',
+                optional: true,
+            },
+            {
+                name: 'waitForSelector',
+                techDescription: 'CSS selector that indicates the action is complete (e.g., ".dashboard" after login). If provided, tool will finish early when this element appears',
+                userFriendlyDescription: 'An element on the page that appears after your action is done (optional)',
+                optional: true,
+            },
+            {
+                name: 'message',
+                techDescription: 'Custom message to display in console while waiting',
+                userFriendlyDescription: 'A message to remind you what to do',
+                optional: true,
+            },
+        ],
+    },
 };
 
 const constants = {

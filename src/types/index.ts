@@ -54,6 +54,21 @@ export interface PageToPdfParams extends BrowserOptions {
     waitTimeAfterClick?: number;
 }
 
+export interface WaitForUserParams {
+    url: string;
+    waitTime?: number;
+    waitForSelector?: string;
+    message?: string;
+}
+
+export interface GetPageHtmlParams extends BrowserOptions {
+    url: string;
+    selector?: string;
+    mode?: 'full' | 'interactive' | 'structure';
+    maxLength?: number;
+    timeout?: number;
+}
+
 export interface LinkInfo {
     text: string;
     href: string;

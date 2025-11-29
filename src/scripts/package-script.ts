@@ -8,6 +8,7 @@ const targets = isMacOS
     ? 'node16-macos-arm64'
     : 'node16-win-x64';
 
-const cmd = `ts-node src/scripts/embed-html.ts && npm run build && npm run bundle && pkg build/index.js --target ${targets} --output dist/browser-automation`;
+// const cmd = `ts-node src/scripts/embed-html.ts && npm run build && npm run bundle && pkg build/index.js --target ${targets} --output dist/browser-automation`;
+const cmd = `npm run build && npm run bundle && pkg build/index.js --target ${targets} --output dist/browser-automation`;
 
 execSync(cmd, {stdio: 'inherit'});
